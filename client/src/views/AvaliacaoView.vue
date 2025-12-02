@@ -12,11 +12,11 @@ const categories = [
   { id: 'direcao', title: 'Direção', question: 'A Direção organizou bem o evento e deixou tudo claro pra você?' },
   { id: 'ti_midias', title: 'TI e Mídias', question: 'Som, vídeos, fotos, projeção e QR Codes funcionaram direitinho?' },
   { id: 'ornamentacao', title: 'Ornamentação', question: 'A decoração e a sinalização deixaram o evento bonito e fácil de entender?' },
-  { id: 'ntpps_eletivas', title: 'Mostra NTPPS', question: 'As apresentações estavam organizadas e nos horários certos?' },
+  { id: 'ntpps_eletivas', title: 'Mostra NTPPS e eletivas', question: 'As apresentações estavam organizadas e nos horários certos?' },
   { id: 'artistico', title: 'Artístico-Cultural', question: 'As apresentações culturais foram boas e bem organizadas?' },
   { id: 'servicos_gerais', title: 'Serviços Gerais', question: 'Os espaços estavam limpos, arrumados e funcionando bem?' },
   { id: 'recepcao', title: 'Recepção', question: 'Você se sentiu bem recebido(a) e bem orientado(a)?' },
-  { id: 'alimentacao', title: 'Alimentação', question: 'Os lanches e a organização dos intervalos foram satisfatórios?' },
+  { id: 'alimentacao', title: 'Alimentação', question: 'Os lanches, almoços e a organização dos intervalos foram satisfatórios? O que pode melhorar?' },
   { id: 'diversidade', title: 'Inclusão', question: 'O evento foi acessível e respeitou as diferenças?' },
   { id: 'feira_profissoes', title: 'Feira das Profissões', question: 'Os profissionais explicaram bem e os espaços estavam organizados?' },
   { id: 'cerimonial', title: 'Cerimonial', question: 'O cerimonial conduziu bem falas, recados e momentos importantes?' },
@@ -33,7 +33,7 @@ const loading = ref(false)
 const error = ref(null)
 
 // Computed
-const totalSteps = computed(() => categories.length + 2) 
+const totalSteps = computed(() => categories.length + 2)
 const isEmailStep = computed(() => currentStep.value === 0)
 const isRatingStep = computed(() => currentStep.value > 0 && currentStep.value <= categories.length)
 const isCommentStep = computed(() => currentStep.value === totalSteps.value - 1)
@@ -47,7 +47,7 @@ const progressPercentage = computed(() => { // eslint-disable-line no-unused-var
 })
 const canProceed = computed(() => {
   if (isEmailStep.value) return validateEmail(email.value)
-  if (isCommentStep.value) return true 
+  if (isCommentStep.value) return true
   return currentCategory.value && ratings[currentCategory.value.id] !== undefined
 })
 
@@ -162,8 +162,8 @@ const submitFeedback = async () => {
 
     await addDoc(collection(db, 'event_feedbacks'), feedbackData)
     localStorage.removeItem(STORAGE_KEY)
-    
-    await new Promise(resolve => setTimeout(resolve, 500)) 
+
+    await new Promise(resolve => setTimeout(resolve, 500))
     router.push('/agradecimento')
   } catch (e) {
     console.error('Error adding document: ', e)
@@ -186,27 +186,27 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-[#F2F2F7] dark:bg-[#000000] font-ios flex flex-col overflow-hidden transition-colors duration-300">
-    
+
     <!-- iOS Navigation Bar -->
     <div class="bg-[#F2F2F7]/80 dark:bg-[#000000]/80 backdrop-blur-md sticky top-0 z-50 border-b border-[#3C3C43]/10 dark:border-[#545458]/60 px-4 py-3 flex justify-between items-center h-[44px] box-content">
-      <button 
-        @click="prevStep" 
+      <button
+        @click="prevStep"
         :disabled="currentStep === 0"
         class="text-[#007AFF] text-[17px] flex items-center gap-1 active:opacity-30 disabled:opacity-0 transition-opacity"
       >
         <ChevronLeft class="w-6 h-6" stroke-width="2.5" />
         Voltar
       </button>
-      
+
       <div class="text-[17px] font-semibold text-black dark:text-white">
         <span v-if="isEmailStep">Identificação</span>
         <span v-else-if="isRatingStep">{{ displayQuestionNumber }} de {{ categories.length }}</span>
         <span v-else>Finalizar</span>
       </div>
 
-      <button 
+      <button
         v-if="!isCommentStep"
-        @click="nextStep" 
+        @click="nextStep"
         :disabled="!canProceed"
         class="text-[#007AFF] text-[17px] font-semibold flex items-center gap-1 active:opacity-30 disabled:text-[#3C3C43]/30 dark:disabled:text-[#EBEBF5]/30 transition-colors"
       >
@@ -218,7 +218,7 @@ onMounted(() => {
 
     <!-- Content Area (Inset Grouped List Style) -->
     <div class="flex-grow overflow-y-auto px-4 py-6 sm:max-w-md sm:mx-auto w-full">
-      
+
       <!-- Title Area -->
       <div class="mb-6 text-center animate-slide-in">
         <h1 class="text-[28px] font-bold text-black dark:text-white mb-1">
@@ -235,13 +235,13 @@ onMounted(() => {
 
       <!-- iOS Grouped Card -->
       <div class="bg-white dark:bg-[#1C1C1E] rounded-[10px] overflow-hidden shadow-sm animate-scale-up">
-        
+
         <!-- Email Input -->
         <div v-if="isEmailStep" class="p-0">
           <div class="px-4 py-3 border-b border-[#3C3C43]/10 dark:border-[#545458]/60 last:border-0 flex items-center">
             <span class="text-[17px] text-black dark:text-white w-20">E-mail</span>
             <form @submit.prevent="nextStep" class="flex-grow">
-              <input 
+              <input
                 type="email"
                 v-model="email"
                 placeholder="exemplo@gmail.com"
@@ -265,7 +265,7 @@ onMounted(() => {
 
         <!-- Rating Buttons -->
         <div v-if="isRatingStep" class="flex divide-x divide-[#3C3C43]/10 dark:divide-[#545458]/60">
-          <button 
+          <button
             v-for="option in ratingOptions"
             :key="currentCategory.id + option.value"
             @click="setRating(currentCategory.id, option.value)"
@@ -278,9 +278,9 @@ onMounted(() => {
 
         <!-- Comment Area -->
         <div v-if="isCommentStep" class="p-0">
-          <textarea 
-            v-model="comment" 
-            rows="6" 
+          <textarea
+            v-model="comment"
+            rows="6"
             class="w-full p-4 bg-transparent text-[17px] text-black dark:text-white placeholder-[#3C3C43]/30 dark:placeholder-[#EBEBF5]/30 outline-none resize-none"
             placeholder="Escreva sua mensagem..."
           ></textarea>
@@ -289,9 +289,9 @@ onMounted(() => {
 
       <!-- Action Button (Mainly for Comment Step) -->
       <div v-if="isCommentStep" class="mt-6">
-        <button 
-          @click="submitFeedback" 
-          :disabled="loading" 
+        <button
+          @click="submitFeedback"
+          :disabled="loading"
           class="w-full py-3.5 bg-[#007AFF] active:bg-[#0062CC] text-white rounded-[12px] text-[17px] font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
         >
           <span v-if="loading" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
